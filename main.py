@@ -14,48 +14,49 @@ import os
 #    print(path)
 
 #print(os.environ.get('PYTHONPATH'))
-
+#########
 rm = pyvisa.ResourceManager()
 print('List of resources:')
 print(rm.list_resources())
 
 kei = rm.open_resource('USB0::0x05E6::0x2636::4439682::INSTR')
-print('Keithley SMU ID:')
-print(kei.query("*IDN?"))
-print(kei.query("print(localnode.model)"))
-print(kei.query("print(localnode.serialno)"))
+#########
+def SetChAVoltage(volt):
+    kei.write("smua.source.levelv = "+str(volt))
+
+def ReadChAVoltage():
+    return kei.query("print(smua.measure.v())")
+
+def ReadChACurrent():
+    return kei.query("print(smua.measure.i())")
+
+def ChA_Off():
+    kei.write("smua.source.output = smua.OUTPUT_OFF")
+
+def ChA_On():
+    kei.write("smua.source.output = smua.OUTPUT_ON")
+
+def Diod_Steps(Vmin, Vmax, step):
+    values = np.arange(Vmin,Vmax,step)
+    for i in values:
+        if i > 3.5:
+            break
+        SetChAVoltage(i)
+        # To show current on display
+        kei.write("smua.measure.i()")
+        kei.write('delay(1)')
+
 
 kei.write('beeper.beep(0.3, 600)')
 
 kei.write('delay(1)')
-print('Commands')
-print(kei.query("print('Hello, World!')"))
-#kei.write("smub.source.levelv = 0")
-kei.write("V_min = 2.6")
-kei.write("smua.source.output = smua.OUTPUT_ON")
-# it's equal to
-kei.write("smua.source.output = 1")
+ChA_On()
 #
-print(kei.query("print('V_min =', V_min)"))
-kei.write("smua.source.levelv = V_min")
-#print(kei.write("smua.measure.i()"))
-#kei.write("smua.measure.v()")
-# To show current on display
-kei.write("smua.measure.i()")
-print('Current =', kei.query("print(smua.measure.i())"))
-print('Voltage =', kei.query("print(smua.measure.v())"))
-kei.write("smua.source.output = smua.OUTPUT_OFF")
-#kei.write("smua.source.levelv = 0")
-#print(kei.query("smua.measure.v"))
-#kei.write("smua.source.output = smua.OUTPUT_OFF")
-
-
-#print(kei.read("smua.source.leveli"))
-#kei.write("*RST")
-
-#kei.write("smua.source.limiti = 1e-3")
-#kei.write("print(smua.source.compliance)")
-
-#####
-
-#PlayGamma(kei)
+#kei.write("smua.source.levelv = V_min")
+#SetChAVoltage(2)
+#kei.write("smua.measure.i()")
+print('Current =', ReadChACurrent())
+print('Voltage =', ReadChAVoltage())
+Diod_Steps(2.0, 3.6, 0.1)
+SetChAVoltage(0)
+ChA_Off()
