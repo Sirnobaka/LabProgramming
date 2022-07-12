@@ -1,0 +1,7 @@
+LeCroy
+https://teledynelecroy.com/doc/using-python-with-activedso-for-remote-communication
+https://teledynelecroy.com/support/techlib/programmingexamples.aspx?type=8
+https://github.com/TeledyneLeCroy/lecroydso
+https://pypi.org/project/LeCroyDSO/
+https://libraries.io/pypi/lecroyutils
+https://lecroydso.readthedocs.io/en/latest/

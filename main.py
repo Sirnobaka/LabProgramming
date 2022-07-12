@@ -37,38 +37,44 @@ def ChA_Off():
 def ChA_On():
     kei.write("smua.source.output = smua.OUTPUT_ON")
 
-def Diod_Steps(Vmin, Vmax, step):
+def Diod_Steps(Vmin, Vmax, step, nTiles, newFile, FileName):
     kei.write("smua.measure.autozero = smua.AUTOZERO_AUTO") #[[auto recalibration]]
     kei.write("smua.source.func = smua.OUTPUT_DCVOLTS")
     kei.write("smua.measure.nplc = 1")
     kei.write("smua.measure.delay = 0.1")
     values = np.arange(Vmin,Vmax,step)
-    file = open('test_file1.txt', 'w', encoding='UTF8', newline='')
-    header = ['voltage_in', 'voltage_out', 'current']
-    writer = csv.writer(file)
-    writer.writerow(header)
+    file = open('output/'+FileName, 'a', encoding='UTF8', newline='')
+    header = ['voltage_in', 'voltage_out', 'current', 'current2', 'nTiles']
+    writer = csv.writer(file, delimiter =' ')
+    # Write your notes here
+    file.write('My note \n')
+    if newFile:
+        writer.writerow(header)
     for i in values:
         if i > 3.5:
             break
         SetChAVoltage(i)
         # To show current on display
         kei.write("smua.measure.i()")
-        kei.write('delay(1)')
-        writer.writerow([i, float(ReadChAVoltage()), float(ReadChACurrent())])
+        kei.write('delay(0.1)')
+        writer.writerow([round(i, 3), float(ReadChAVoltage()), float(ReadChACurrent()), float(ReadChACurrent()), nTiles])
     file.close()
 
 
 kei.write('beeper.beep(0.3, 600)')
-
 kei.write('delay(1)')
-ChA_On()
 #
 #kei.write("smua.source.levelv = V_min")
 #SetChAVoltage(2)
 #kei.write("smua.measure.i()")
-print('Current =', ReadChACurrent())
-print('Voltage =', ReadChAVoltage())
-Diod_Steps(2.0, 3.6, 0.1)
-SetChAVoltage(0)
+#print('Current =', ReadChACurrent())
+#print('Voltage =', ReadChAVoltage())
+ChA_On()
+Diod_Steps(3.0, 3.6, 0.1, 3, True, 'Test_file2.txt')
 ChA_Off()
 #PlayGamma(kei)
+
+#from lecroydso import LeCroyDSO, LeCroyVISA
+#transport = LeCroyVISA('TCPIP0::127.0.0.1::inst0::INSTR')
+#dso = LeCroyDSO(transport)
+#print(dso.query('*IDN?'))
