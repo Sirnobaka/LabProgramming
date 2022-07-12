@@ -5,3 +5,10 @@ https://github.com/TeledyneLeCroy/lecroydso
 https://pypi.org/project/LeCroyDSO/
 https://libraries.io/pypi/lecroyutils
 https://lecroydso.readthedocs.io/en/latest/
+
+#PlayGamma(kei)
+
+#from lecroydso import LeCroyDSO, LeCroyVISA
+#transport = LeCroyVISA('TCPIP0::127.0.0.1::inst0::INSTR')
+#dso = LeCroyDSO(transport)
+#print(dso.query('*IDN?'))

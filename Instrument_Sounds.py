@@ -13,8 +13,8 @@ NOTE_A4  = 440
 NOTE_AS4 = 466
 NOTE_B4 =  494
 
-rm = pyvisa.ResourceManager()
-kei = rm.open_resource('USB0::0x05E6::0x2636::4439682::INSTR')
+#rm = pyvisa.ResourceManager()
+#kei = rm.open_resource('USB0::0x05E6::0x2636::4439682::INSTR')
 
 def PlayGamma(kei):
     Gamma = [NOTE_C4, NOTE_D4, NOTE_E4, NOTE_F4, NOTE_G4, NOTE_A4, NOTE_B4]
@@ -25,5 +25,3 @@ def PlayGamma(kei):
     for note in Gamma[::-1][1:]:
         #print(note)
         kei.write('beeper.beep(0.1, ' + str(note) + ')')
-
-#PlayGamma(kei)
